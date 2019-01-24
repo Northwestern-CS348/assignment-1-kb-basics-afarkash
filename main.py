@@ -14,20 +14,20 @@ class KBTest(unittest.TestCase):
             if isinstance(item, Fact):
                 self.KB.kb_assert(item)
         
-
     def test1(self):
         ask1 = read.parse_input("fact: (color bigbox red)")
+        
         print(' Asking if', ask1)
         answer = self.KB.kb_ask(ask1)
         self.assertEqual(answer[0].bindings, [])
         #self.assertEqual(answer.list_of_bindings[0][1][0], ask1)
-
+        
     def test2(self):
         ask1 = read.parse_input("fact: (color littlebox red)")
         print(' Asking if', ask1)
         answer = self.KB.kb_ask(ask1)
         self.assertFalse(answer)
-
+        
     def test3(self):
         ask1 = read.parse_input("fact: (color ?X red)")
         print(' Asking if', ask1)
@@ -42,7 +42,7 @@ class KBTest(unittest.TestCase):
         print(' Asking if', ask1)
         answer = self.KB.kb_ask(ask1)
         self.assertEqual(str(answer[0]), "?Y : red")
-
+        
     def test5(self):
         ask1 = read.parse_input("fact: (color ?X ?Y)")
         print(' Asking if', ask1)
@@ -54,6 +54,57 @@ class KBTest(unittest.TestCase):
         self.assertEqual(str(answer[4]), "?X : pyramid3, ?Y : red")
         self.assertEqual(str(answer[5]), "?X : pyramid4, ?Y : red")
         
+class KBTest2(unittest.TestCase):
+
+    def setUp(self):
+        # Assert starter facts
+        file2 = 'statements_kb.txt'
+        data = read.read_tokenize(file2)
+        self.KB = KnowledgeBase([], [])
+        for item in data:
+            if isinstance(item, Fact):
+                self.KB.kb_assert(item)
+
+    def test1(self):
+        ask1 = read.parse_input("fact: (size pyramid3 big)")
+        
+        print(' Asking if', ask1)
+        answer = self.KB.kb_ask(ask1)
+        self.assertEqual(answer[0].bindings, [])
+        #self.assertEqual(answer.list_of_bindings[0][1][0], ask1)
+        
+    def test2(self):
+        ask1 = read.parse_input("fact: (color pyramid4 yellow)")
+        print(' Asking if', ask1)
+        answer = self.KB.kb_ask(ask1)
+        self.assertFalse(answer)
+        
+    def test3(self):
+        ask1 = read.parse_input("fact: (inst ?X pyramid)")
+        print(' Asking if', ask1)
+        answer = self.KB.kb_ask(ask1)
+        self.assertEqual(str(answer[0]), "?X : pyramid1")
+        self.assertEqual(str(answer[1]), "?X : pyramid2")
+        self.assertEqual(str(answer[2]), "?X : pyramid3")
+        self.assertEqual(str(answer[3]), "?X : pyramid4")
+        
+
+    def test4(self):
+        ask1 = read.parse_input("fact: (color pyramid2 ?Y)")
+        print(' Asking if', ask1)
+        answer = self.KB.kb_ask(ask1)
+        self.assertEqual(str(answer[0]), "?Y : green")
+        
+    def test5(self):
+        ask1 = read.parse_input("fact: (size ?X ?Y)")
+        print(' Asking if', ask1)
+        answer = self.KB.kb_ask(ask1)
+        self.assertEqual(str(answer[0]), "?X : bigbox, ?Y : big")
+        self.assertEqual(str(answer[1]), "?X : littlebox, ?Y : small")
+        self.assertEqual(str(answer[2]), "?X : pyramid1, ?Y : small")
+        self.assertEqual(str(answer[3]), "?X : pyramid2, ?Y : small")
+        self.assertEqual(str(answer[4]), "?X : pyramid3, ?Y : big")
+        self.assertEqual(str(answer[5]), "?X : pyramid4, ?Y : big")
 
 if __name__ == '__main__':
     unittest.main()
